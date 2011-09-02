@@ -8,6 +8,120 @@ configuration to custom queries.
 The aim is to merge functionality and refactor (where appropriate) into a unified puppet module that covers all
 of these areas of functionality.
 
+All credit goes to DavidS and rgaevert for their excellent implementations. I simply merged what was already existing.
+
+Usage
+=====
+
+MySQL Installation
+------------------
+
+Install oracle branch, do not allow for multiple instances per host.
+```
+class {
+	'mysql::server':
+		type => 'oracle',
+		multi => false,
+}
+```
+
+Install mariaDB branch, configure multiple instances.
+
+```
+class {
+	'mysql::server':
+		type => 'mariadb',
+		multi => true,
+}
+
+mysql::multi::instance {
+  'mysqld1':
+    groupnr      => 1,
+    bind_address => '0.0.0.0',
+    port         => 3307;
+  'mysqld2':
+    groupnr      => 2,
+    bind_address => '0.0.0.0',
+    port         => 3308;
+  'mysqld3':
+    groupnr      => 3,
+    bind_address => '0.0.0.0',
+    port         => 3309,
+    ensure       => 'stopped';
+}
+```
+
+MySQL Configuration
+-------------------
+
+Change settings in your MySQL configuration
+
+```
+mysql::config::param {
+  'bind-address':
+    section => 'mysqld',
+    value   => '0.0.0.0';
+}
+```
+
+```
+mysql::config::param {
+  'bind-address1':
+    section => 'mysqld1',
+    param   => 'bind-address',
+    value   => '0.0.0.0';
+}
+```
+
+Database
+--------
+
+Ensure a database is created
+
+```
+mysql_database { "mydb":
+	ensure => present,
+	name => "mydb", # [OPTIONAL namevar]
+	defaults => "/etc/mysql/debian.cnf", # [OPTIONAL]
+}
+```
+
+Ensure a database is dropped
+
+```
+mysql_database { "mydb":
+	ensure => absent,
+	name => "mydb", # [OPTIONAL namevar]
+}
+```
+
+Users
+-----
+
+Ensure a user is created (global)
+
+```
+mysql_user { "myuser@localhost":
+	ensure => present,
+	name => "myuser@localhost", # [OPTIONAL namevar]
+	password_hash => "mysql_password() hash to use",
+	defaults => "", # [OPTIONAL]
+}
+```
+
+Grant rights to user
+
+```
+mysql_grant { "myuser@localhost/mydb":
+	name => "myuser@localhost/mydb", # [OPTIONAL namevar]
+	privileges => all,
+	defaults => "", # [OPTIONAL]
+}
+```
+
+Of course you can grant individual rights via an array.
+
+
 State of the puppet-mysql scene
 -------------------------------
 
