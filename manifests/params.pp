@@ -1,6 +1,6 @@
 class mysql::params
 {
-  include pwgen
+  # include pwgen
 
   $packages = $type ? {
     'oracle'  => [ 'mysql-server-5.1' ],
@@ -25,7 +25,7 @@ class mysql::params
     default                => 'multipass',
   }
   
-  $initscript = $mysql::multi ? {
+  $initscript = $mysql::server::multi ? {
     true   => 'puppet:///modules/mysql/init.multi',
     false =>  undef,
   }

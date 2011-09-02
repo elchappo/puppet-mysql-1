@@ -2,7 +2,7 @@
 # Parts Copyright (C) 2007 David Schmitt <david@schmitt.edv-bus.at>
 # Parts Copyright Rgaevert
 
-class mysql::server ( $type='oracle', $multi=false) {
+class mysql::server ( $type='oracle', $multi=false ) {
 
 	include mysql::params
 	include mysql::repo
@@ -23,10 +23,11 @@ class mysql::server ( $type='oracle', $multi=false) {
 	  	Class['config'] -> Class['service'] -> Class['functions']
 	}
 
-	munin::plugin {
-		[mysql_bytes, mysql_queries, mysql_slowqueries, mysql_threads]:
-			config => "env.mysqlopts --defaults-file=/etc/mysql/debian.cnf\nuser root"
-	}
+	# What if we don't have munin?
+	# munin::plugin {
+	# 	[mysql_bytes, mysql_queries, mysql_slowqueries, mysql_threads]:
+	# 		config => "env.mysqlopts --defaults-file=/etc/mysql/debian.cnf\nuser root"
+	# }
 
 	# Collect all databases and users
 	Mysql_database<<||>>
