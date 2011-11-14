@@ -1,3 +1,11 @@
+This WILL be superseded by puppetlabs' official puppet-mysql module
+-------------------------------------------------------------------
+
+See puppetlabs/puppetlabs-mysql
+
+Puppetlabs is producing its own module superior to most of the community
+driven modules.
+
 Overview
 --------
 
